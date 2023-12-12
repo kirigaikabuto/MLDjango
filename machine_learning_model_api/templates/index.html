@@ -5,7 +5,67 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <title>FlaskBlog</title>
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("button").click(function () {
+            $.post("http://127.0.0.1:5000/api/flowers/identify/",
+                {
+                    sepal_length: 5.1,
+                    sepal_width: 3.5,
+                    petal_length: 1.4,
+                    petal_width: 0.2
+                }
+                ,
+                function (result) {
+                    alert(result);
+                });
+        });
+    });
+</script>
+</head>
+</script>
 <body>
-<h1>asdasdsdsad</h1>
+<div class="product-list-container">
+    {% for flower in flowers %}
+    <div class="product-card">
+        <img src="{{flower['image']}}" alt="Product Name">
+        <h3 class="product-title">{{flower['name']}}</h3>
+        <p class="product-description">Product description goes here.</p>
+        <p class="product-price">$0.00</p>
+    </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <div class="col-75">
+        <div class="container">
+
+
+            <div class="row">
+                <div class="col-50">
+                    <h3>Find flower</h3>
+                    <label for="sepal_length"><i class="fa fa-user"></i> Sepal Length</label>
+                    <input type="number" id="sepal_length" name="firstname" placeholder="0.0">
+                    <label for="sepal_width"><i class="fa fa-envelope"></i> Sepal Width</label>
+                    <input type="number" id="sepal_width" name="email" placeholder="0.0">
+                    <label for="petal_length"><i class="fa fa-address-card-o"></i> Petal Length</label>
+                    <input type="number" id="petal_length" name="address" placeholder="0.0">
+                    <label for="petal_width"><i class="fa fa-institution"></i> Petal Width</label>
+                    <input type="number" id="petal_width" name="city" placeholder="0.0">
+                </div>
+                <div class="col-50">
+                    <img src="https://img.freepik.com/premium-photo/red-question-mark-symbol_2227-614.jpg?w=360"
+                         id="response_img">
+                    <p id="response_text">Response</p>
+                </div>
+            </div>
+            <button value="check" class="btn" id="clicker">
+                CHECK
+            </button>
+
+
+        </div>
+    </div>
+</div>
 </body>
 </html>

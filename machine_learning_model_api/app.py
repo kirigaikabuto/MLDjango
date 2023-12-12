@@ -3,7 +3,7 @@ import pickle
 from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
-filename = '../finalized_model.sav'
+filename = './ml_model/finalized_model.sav'
 loaded_model = pickle.load(open(filename, 'rb'))
 full_data = [
     {
@@ -16,21 +16,26 @@ full_data = [
     },
     {
         "name": "Iris-virginica",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Iris_virginica_2.jpg/1200px-Iris_virginica_2.jpg",
+        "image": "https://s3.amazonaws.com/eit-planttoolbox-prod/media/images/Iris-virginica--Justin-Meissen--CC-BY-SA.jpg",
     },
 ]
 
 
-@app.route('/api/flowers/identify', methods=["POST"])
+@app.route('/api/flowers/identify/', methods=["POST"])
 def identify():
     data = request.get_json()
     sepal_length = float(data['sepal_length'])
     sepal_width = float(data['sepal_width'])
     petal_length = float(data['petal_length'])
     petal_width = float(data['petal_width'])
-    predicted_flower_name = loaded_model.predict[sepal_length, sepal_width, petal_length, petal_width]
+    predicted_flower_name = loaded_model.predict([[sepal_length, sepal_width, petal_length, petal_width]])
+    response = {}
     print(predicted_flower_name)
-    return jsonify(data)
+    for el in full_data:
+        if el["name"] == predicted_flower_name[0]:
+            response = el
+            break
+    return jsonify(response)
 
 
 @app.route("/api/flowers/", methods=["GET"])
@@ -40,7 +45,7 @@ def get_flowers():
 
 @app.route("/", methods=["GET"])
 def main_page():
-    return render_template("index.html")
+    return render_template("index.html", flowers=full_data)
 
 
 if __name__ == "__main__":
